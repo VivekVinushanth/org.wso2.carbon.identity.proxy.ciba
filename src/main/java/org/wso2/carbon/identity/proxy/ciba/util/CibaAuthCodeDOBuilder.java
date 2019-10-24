@@ -54,24 +54,28 @@ public class CibaAuthCodeDOBuilder {
     public CibaAuthCodeDO buildCibaAuthCodeDO(String cibaAuthCode, CibaAuthRequestDTO cibaAuthRequestDTO) throws NoSuchAlgorithmException, ParseException {
 
 
-
+/*
         SignedJWT signedJWT = SignedJWT.parse(cibaAuthCode);
         JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
-        JSONObject jo = signedJWT.getJWTClaimsSet().toJSONObject();
+        JSONObject jo = signedJWT.getJWTClaimsSet().toJSONObject();*/
 
-        String  lastpolledTimeasString = jo.get("iat").toString();
+      /*  String  lastpolledTimeasString = jo.get("iat").toString();
         long lastPolledTime = Long.parseLong(lastpolledTimeasString);
         log.info("last polled here"+lastPolledTime);
         String  expiryTimeasString = jo.get("exp").toString();
         long expiryTime = Long.parseLong(expiryTimeasString);
-        log.info("expiry herre"+ expiryTime);
+        log.info("expiry herre"+ expiryTime);*/
+
+
+      long lastPolledTime = cibaAuthRequestDTO.getIssuedTime();
+      long expiryTime = cibaAuthRequestDTO.getExpiredTime();
 
         String bindingMessage;
         String transactionContext;
         String scope;
 
 
-        if (cibaAuthRequestDTO.getBindingMessage() == null){
+        if (cibaAuthRequestDTO.getBindingMessage() == null || cibaAuthRequestDTO.getBindingMessage().equals("null")){
             bindingMessage= "null";
 
         } else{
@@ -81,22 +85,21 @@ public class CibaAuthCodeDOBuilder {
 
 
 
-        if (cibaAuthRequestDTO.getTransactionContext() == null  ||
-                String.valueOf(jo.get("transaction_context")).isEmpty()){
+        if (cibaAuthRequestDTO.getTransactionContext() == null || cibaAuthRequestDTO.getTransactionContext().equals("null")){
             transactionContext= "null";
 
         } else{
-            transactionContext  = jo.get("transaction_context").toString();
+            transactionContext  = cibaAuthRequestDTO.getTransactionContext();
             log.info("transaction value herre" + transactionContext);
         }
 
 
-        if (jo.get("scope") == null  ||
-                String.valueOf(jo.get("scope")).isEmpty()){
+        if (cibaAuthRequestDTO.getScope() == null ||
+               cibaAuthRequestDTO.getScope().equals("null")){
             scope= "null";
 
         } else{
-            scope  = jo.get("scope").toString();
+            scope  =  cibaAuthRequestDTO.getScope();
             log.info("scope" + scope);
         }
 

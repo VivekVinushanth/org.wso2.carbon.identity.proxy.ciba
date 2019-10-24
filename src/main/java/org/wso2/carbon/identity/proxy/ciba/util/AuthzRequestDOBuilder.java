@@ -7,6 +7,7 @@ import org.wso2.carbon.identity.oauth.common.exception.InvalidOAuthClientExcepti
 import org.wso2.carbon.identity.oauth.dao.OAuthAppDO;
 import org.wso2.carbon.identity.oauth2.IdentityOAuth2Exception;
 import org.wso2.carbon.identity.oauth2.util.OAuth2Util;
+import org.wso2.carbon.identity.proxy.ciba.configuration.ConfigurationFile;
 import org.wso2.carbon.identity.proxy.ciba.dto.AuthzRequestDTO;
 import org.wso2.carbon.identity.proxy.ciba.dto.CibaAuthRequestDTO;
 import org.wso2.carbon.identity.proxy.ciba.model.CibaAuthCodeDO;
@@ -47,10 +48,8 @@ public class AuthzRequestDOBuilder {
         String clientID = cibaAuthRequestDTO.getAudience();
         String user = cibaAuthRequestDTO.getUserHint();
 
-        OAuthAppDO appDO = OAuth2Util.getAppInformationByClientId(clientID);
-        //log.info(appDO.getCallbackUrl());
 
-        String callbackUri = appDO.getCallbackUrl();
+        String callbackUri = ConfigurationFile.getInstance().getCLIENT_NOTIFICATION_ENDPOINT();
 
         authzRequestDTO.setAuthReqIDasState(cibaAuthCodeDO.getCibaAuthCodeID());
         authzRequestDTO.setCallBackUrl(callbackUri);

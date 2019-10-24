@@ -425,7 +425,7 @@ public class AuthRequestValidator {
 
         //validate 'issuer' of the authentication request.
         String clientId = claimsSet.getIssuer();
-        if (clientId == null) {
+        if (clientId == null || !clientId.equals(ConfigurationFile.getInstance().getCLIENT_ID())) {
 
             if (log.isDebugEnabled()) {
                 log.debug("Missing issuer of the JWT.");

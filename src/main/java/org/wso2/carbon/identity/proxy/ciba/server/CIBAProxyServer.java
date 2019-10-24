@@ -16,6 +16,7 @@ import org.wso2.carbon.identity.proxy.ciba.exceptions.ErrorCodes;
 import org.wso2.carbon.identity.proxy.ciba.handlers.CibaAuthRequestHandler;
 
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.oltu.oauth2.as.response.OAuthASResponse;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
+import org.wso2.carbon.identity.proxy.ciba.handlers.CibaCallBackHandler;
 
 
 /**
@@ -49,7 +51,7 @@ public class CIBAProxyServer implements AuthorizationServer {
     /**
      * Endpoint where authentication request hits and then proceeded.
      */
-    @RequestMapping(value = "/CIBAEndPoint")
+    @RequestMapping(value = "/CIBAEndPoint" ,  method = RequestMethod.POST)
     public Response acceptAuthRequest(@Context HttpServletRequest request , @Context HttpServletResponse response)
             throws OAuthSystemException, ParseException, IdentityOAuth2Exception {
         Map<String, String[]> attributeNames = request.getParameterMap();
@@ -96,6 +98,7 @@ public class CIBAProxyServer implements AuthorizationServer {
     public void acceptTokenRequest(@Context HttpServletRequest request , @Context HttpServletResponse response) {
 
 
+
     }
 
 
@@ -104,8 +107,17 @@ public class CIBAProxyServer implements AuthorizationServer {
      *Endpoint which serves as Callbackurl.
      */
     @RequestMapping("/CallBackEndpoint")
-    public void acceptAuthenticationStatus(@Context HttpServletRequest request , @Context HttpServletResponse response) {
-            // TODO: 10/23/19 implement
+    public void acceptAuthenticationStatus(@Context HttpServletRequest request , @Context HttpServletResponse response) throws Exception {
+        Map<String, String[]> attributeNames = request.getParameterMap();
+
+        if (attributeNames.containsKey(CibaParams.ERROR_DESCRIPTION) || attributeNames.containsKey(CibaParams.SESSION_STATE)) {
+            CibaCallBackHandler.getInstance().handleCallBackfromIS(request);
+
+        } else {
+            //do nothing about it.
+        }
+
+
     }
 
 

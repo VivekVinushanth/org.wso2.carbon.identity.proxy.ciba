@@ -81,6 +81,8 @@ public class AuthReqIDManager {
         jweObject.encrypt(encrypter);
         String AuthReqID = jweObject.serialize();
 
+        System.out.println("Auth_req_id : "+ AuthReqID);
+
         return AuthReqID;
     }
 
@@ -104,12 +106,12 @@ public class AuthReqIDManager {
         String transactionContext = cibaAuthRequestDTO.getTransactionContext();// can be a null string
         String userHint = cibaAuthRequestDTO.getUserHint();
         long issuedTime = ZonedDateTime.now().toInstant().toEpochMilli();
-      //  cibaAuthRequestDTO.setIssuedTime(issuedTime); //add missing values
+       cibaAuthRequestDTO.setIssuedTime(issuedTime); //add missing values
         long durability = this.getExpiresIn(cibaAuthRequestDTO)*1000;
         long expiryTime = issuedTime+durability;
-       // cibaAuthRequestDTO.setExpiredTime(expiryTime);
+       cibaAuthRequestDTO.setExpiredTime(expiryTime);
         long notBeforeUsable = issuedTime+ CibaParams.interval*1000;
-       // cibaAuthRequestDTO.setNotBeforeTime(notBeforeUsable);
+        cibaAuthRequestDTO.setNotBeforeTime(notBeforeUsable);
 
             JWTClaimsSet claims = new JWTClaimsSet.Builder()
                     .claim("iss", issuingServer)

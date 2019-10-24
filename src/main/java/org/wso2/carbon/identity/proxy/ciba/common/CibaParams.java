@@ -24,6 +24,8 @@ package org.wso2.carbon.identity.proxy.ciba.common;
 public class CibaParams {
 
 
+    public static final String ERROR_DESCRIPTION = "error_description";
+    public static final String SESSION_STATE = "session_state";
     public static long INTERVAL_INCREMENT =3 ;
     public static long expiresIn = 3600;
     public static long interval = 2;

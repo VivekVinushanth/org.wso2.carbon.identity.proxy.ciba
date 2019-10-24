@@ -24,6 +24,7 @@ public class DbConnection {
         poolProperties.setDriverClassName("com.mysql.cj.jdbc.Driver");
         poolProperties.setUsername(ConfigurationFile.getInstance().getDB_USER_NAME());
         poolProperties.setPassword(ConfigurationFile.getInstance().getDB_PASSWORD());
+        poolProperties.setDefaultAutoCommit(false);
         //poolProperties.setJmxEnabled(true);
         //poolProperties.setTestOnBorrow(true);
         //poolProperties.setValidationQuery("SELECT 1"); //connection object validation
@@ -44,6 +45,7 @@ public class DbConnection {
 
 
         Connection connect = datasource.getConnection();
+        connect.setAutoCommit(false);
         return connect;
     }
 

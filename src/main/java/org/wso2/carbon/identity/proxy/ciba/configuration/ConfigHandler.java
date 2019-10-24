@@ -143,6 +143,16 @@ public class ConfigHandler {
                     LOGGER.severe("Database can not be null");
                 }
 
+                try{
+                    if(tempConfig.getPrivateKey().isEmpty() ||tempConfig.getPrivateKey().equals("") ||
+                            tempConfig.getPrivateKey().equals("null")){
+                        throw new IllegalArgumentException();
+                    } else{
+                        ConfigurationFile.getInstance().setPRIVATE_KEY(tempConfig.getPrivateKey());
+                    }
+                }catch (IllegalArgumentException e){
+                    LOGGER.severe("Database can not be null");
+                }
 
                 try{
                     if(tempConfig.getflowMode().isEmpty() ||tempConfig.getflowMode().equals("") ||

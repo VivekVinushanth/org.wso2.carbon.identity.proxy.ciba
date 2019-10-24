@@ -6,11 +6,16 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
+import org.springframework.web.client.RestTemplate;
 import org.wso2.carbon.identity.oauth2.IdentityOAuth2Exception;
 import org.wso2.carbon.identity.proxy.ciba.common.CibaParams;
 import org.wso2.carbon.identity.proxy.ciba.dto.AuthzRequestDTO;
+import org.wso2.carbon.identity.proxy.ciba.util.RestTemplateFactory;
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -49,7 +54,7 @@ public class CibaAuthorizationHandler {
      * @throws ExecutionException,IOException
      */
     public void initiateAuthzRequest(AuthzRequestDTO authzRequestDto) throws InterruptedException,
-            ExecutionException, IOException {
+            ExecutionException, IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
 
      /*  RestTemplate restTemplate = new RestTemplate();
 
@@ -72,8 +77,8 @@ public class CibaAuthorizationHandler {
      * @return void. Initiate the async authorize request
      * @throws IdentityOAuth2Exception
      */
-    public void fireAndForget(String url) throws ExecutionException, InterruptedException, IOException {
-
+    public void fireAndForget(String url) throws ExecutionException, InterruptedException, IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+/*
         CloseableHttpAsyncClient client = HttpAsyncClients.createDefault();
         client.start();
         HttpGet request = new HttpGet(url);
@@ -101,8 +106,11 @@ public class CibaAuthorizationHandler {
             }
 
             client.close();
-        }
+        }*/
 
+
+        RestTemplate restTemplate = RestTemplateFactory.getInstance().getRestTemplate();
+        String result = restTemplate.getForObject(url,String.class);
     }
 
 }
