@@ -155,6 +155,17 @@ public class ConfigHandler {
                 }
 
                 try{
+                    if(tempConfig.getGrant_type().isEmpty() ||tempConfig.getGrant_type().equals("") ||
+                            tempConfig.getGrant_type().equals("null")){
+                        throw new IllegalArgumentException();
+                    } else{
+                        ConfigurationFile.getInstance().setGRANT_TYPE(tempConfig.getGrant_type());
+                    }
+                }catch (IllegalArgumentException e){
+                    LOGGER.severe("Database can not be null");
+                }
+
+                try{
                     if(tempConfig.getflowMode().isEmpty() ||tempConfig.getflowMode().equals("") ||
                           tempConfig.getflowMode().equals("null")){
                         throw new IllegalArgumentException();

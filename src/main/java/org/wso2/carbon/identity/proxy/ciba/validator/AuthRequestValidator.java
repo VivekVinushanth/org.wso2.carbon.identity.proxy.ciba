@@ -24,17 +24,12 @@ import com.nimbusds.jwt.SignedJWT;
 import net.minidev.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.identity.oauth.common.exception.InvalidOAuthClientException;
-import org.wso2.carbon.identity.oauth.dao.OAuthAppDO;
 import org.wso2.carbon.identity.oauth2.IdentityOAuth2Exception;
-import org.wso2.carbon.identity.oauth2.util.OAuth2Util;
 import org.wso2.carbon.identity.proxy.ciba.common.CibaParams;
-import org.wso2.carbon.identity.proxy.ciba.configuration.ConfigHandler;
 import org.wso2.carbon.identity.proxy.ciba.configuration.ConfigurationFile;
-import org.wso2.carbon.identity.proxy.ciba.dto.AuthResponseContextDTO;
+import org.wso2.carbon.identity.proxy.ciba.dto.CibaResponseContextDTO;
 import org.wso2.carbon.identity.proxy.ciba.dto.CibaAuthRequestDTO;
 import org.wso2.carbon.identity.proxy.ciba.exceptions.ErrorCodes;
-import org.wso2.carbon.identity.proxy.ciba.util.AuthReqIDManager;
 
 
 import javax.servlet.http.HttpServletResponse;
@@ -79,7 +74,7 @@ public class AuthRequestValidator {
 
     }
 
-    public Boolean isValidAuthRequest(String request, AuthResponseContextDTO authResponseContextDTO,
+    public Boolean isValidAuthRequest(String request, CibaResponseContextDTO cibaResponseContextDTO,
                                       CibaAuthRequestDTO cibaAuthRequestDTO) throws ParseException {
         long currentTime = ZonedDateTime.now().toInstant().toEpochMilli();
         long skewTime = 2000;
@@ -90,9 +85,9 @@ public class AuthRequestValidator {
 
 
         if (!this.checkSignature(signedJWT)) {
-            authResponseContextDTO.setErrorCode(HttpServletResponse.SC_UNAUTHORIZED);
-            authResponseContextDTO.setError(ErrorCodes.UNAUTHORIZED_CLIENT);
-            authResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.INVALID_SIGNATURE);
+            cibaResponseContextDTO.setErrorCode(HttpServletResponse.SC_UNAUTHORIZED);
+            cibaResponseContextDTO.setError(ErrorCodes.UNAUTHORIZED_CLIENT);
+            cibaResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.INVALID_SIGNATURE);
             return false;
 
         } else {
@@ -105,9 +100,9 @@ public class AuthRequestValidator {
                 if (log.isDebugEnabled()) {
                     log.debug("Invalid request. Missing audience for the JWT.");
                 }
-                authResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
-                authResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
-                authResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.MISSING_PARAMETERS);
+                cibaResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
+                cibaResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
+                cibaResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.MISSING_PARAMETERS);
                 return false;
 
             } else {
@@ -127,9 +122,9 @@ public class AuthRequestValidator {
                         log.debug("Invalid value for audience.Check the configuration.");
                     }
 
-                    authResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
-                    authResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
-                    authResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.INVALID_PARAMETERS);
+                    cibaResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
+                    cibaResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
+                    cibaResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.INVALID_PARAMETERS);
                     return false;
                 }
             }
@@ -145,9 +140,9 @@ public class AuthRequestValidator {
                 }
                 isValid = false;
 
-                authResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
-                authResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
-                authResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.MISSING_PARAMETERS);
+                cibaResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
+                cibaResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
+                cibaResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.MISSING_PARAMETERS);
                 return false;
             } else {
 
@@ -165,9 +160,9 @@ public class AuthRequestValidator {
                 }
                 isValid = false;
 
-                authResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
-                authResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
-                authResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.MISSING_PARAMETERS);
+                cibaResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
+                cibaResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
+                cibaResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.MISSING_PARAMETERS);
                 return false;
 
             } else {
@@ -178,9 +173,9 @@ public class AuthRequestValidator {
                     if (log.isDebugEnabled()) {
                         log.debug("Authentication request rejected.Request JWT expired.");
                     }
-                    authResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
-                    authResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
-                    authResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.INVALID_PARAMETERS);
+                    cibaResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
+                    cibaResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
+                    cibaResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.INVALID_PARAMETERS);
                     isValid = false;
                     return false;
                 } else {
@@ -198,9 +193,9 @@ public class AuthRequestValidator {
                 if (log.isDebugEnabled()) {
                     log.debug("Invalid request : Missing mandatory parameter 'iat'");
                 }
-                authResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
-                authResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
-                authResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.MISSING_PARAMETERS);
+                cibaResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
+                cibaResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
+                cibaResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.MISSING_PARAMETERS);
                 isValid = false;
                 return false;
 
@@ -213,9 +208,9 @@ public class AuthRequestValidator {
                     if (log.isDebugEnabled()) {
                         log.debug("Authentication request rejected.Invalid Request JWT issued time.");
                     }
-                    authResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
-                    authResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
-                    authResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.INVALID_PARAMETERS);
+                    cibaResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
+                    cibaResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
+                    cibaResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.INVALID_PARAMETERS);
                     isValid = false;
                     return false;
                 } else {
@@ -234,9 +229,9 @@ public class AuthRequestValidator {
             if (log.isDebugEnabled()) {
                 log.debug("Invalid request : Missing mandatory parameter 'nbf'");
             }
-            authResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
-            authResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
-            authResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.MISSING_PARAMETERS);
+            cibaResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
+            cibaResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
+            cibaResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.MISSING_PARAMETERS);
             isValid = false;
             return false;
 
@@ -246,9 +241,9 @@ public class AuthRequestValidator {
             try {
                 if (checkNotBeforeTime(currentTime, nbfTime, skewTime)) {
                     isValid = false;
-                    authResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
-                    authResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
-                    authResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.INVALID_PARAMETERS);
+                    cibaResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
+                    cibaResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
+                    cibaResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.INVALID_PARAMETERS);
                     return false;
                 } else {
                     isValid = true;
@@ -270,9 +265,9 @@ public class AuthRequestValidator {
             if (log.isDebugEnabled()) {
                 log.debug("Invalid request : Missing mandatory parameter 'scope'");
             }
-            authResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
-            authResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
-            authResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.MISSING_PARAMETERS);
+            cibaResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
+            cibaResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
+            cibaResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.MISSING_PARAMETERS);
             isValid = false;
             return false;
 
@@ -395,7 +390,7 @@ public class AuthRequestValidator {
             log.debug("CIBA Authentication Request Validated.");
         }
 
-        authResponseContextDTO.setErrorCode(HttpServletResponse.SC_OK);
+        cibaResponseContextDTO.setErrorCode(HttpServletResponse.SC_OK);
         return isValid;
     }
 
@@ -415,7 +410,7 @@ public class AuthRequestValidator {
      * @param request CIBA Authentication request
      * @return Boolean
      */
-    public Boolean isValidClient(String request, AuthResponseContextDTO authResponseContextDTO,
+    public Boolean isValidClient(String request, CibaResponseContextDTO cibaResponseContextDTO,
                                  CibaAuthRequestDTO cibaAuthRequestDTO) throws ParseException, IdentityOAuth2Exception {
 
         SignedJWT signedJWT = SignedJWT.parse(request);
@@ -430,9 +425,9 @@ public class AuthRequestValidator {
             if (log.isDebugEnabled()) {
                 log.debug("Missing issuer of the JWT.");
             }
-            authResponseContextDTO.setErrorCode(HttpServletResponse.SC_UNAUTHORIZED);
-            authResponseContextDTO.setError(ErrorCodes.UNAUTHORIZED_CLIENT);
-            authResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.MISSING_CLIENT_ID);
+            cibaResponseContextDTO.setErrorCode(HttpServletResponse.SC_UNAUTHORIZED);
+            cibaResponseContextDTO.setError(ErrorCodes.UNAUTHORIZED_CLIENT);
+            cibaResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.MISSING_CLIENT_ID);
             cibaAuthRequestDTO = null;
             return false;
 
@@ -447,9 +442,9 @@ public class AuthRequestValidator {
             if ((clientID == null || clientID.isEmpty() || clientID.equals("null")) ||
                     (callbackUri == null || callbackUri.isEmpty() || callbackUri.equals("null")) ||
                     (clientSecret == null || clientSecret.isEmpty() || clientSecret.equals("null"))) {
-                authResponseContextDTO.setErrorCode(HttpServletResponse.SC_UNAUTHORIZED);
-                authResponseContextDTO.setError(ErrorCodes.UNAUTHORIZED_CLIENT);
-                authResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.UNKNOWN_CLIENT);
+                cibaResponseContextDTO.setErrorCode(HttpServletResponse.SC_UNAUTHORIZED);
+                cibaResponseContextDTO.setError(ErrorCodes.UNAUTHORIZED_CLIENT);
+                cibaResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.UNKNOWN_CLIENT);
                 cibaAuthRequestDTO = null;
 
                 if (log.isDebugEnabled()) {
@@ -498,7 +493,7 @@ public class AuthRequestValidator {
      * @param authRequest CIBA request
      * @return boolean
      */
-    public boolean isValidUserCode(String authRequest, AuthResponseContextDTO authResponseContextDTO) {
+    public boolean isValidUserCode(String authRequest, CibaResponseContextDTO cibaResponseContextDTO) {
         return true;
         //no implementation for the moment.Modify if needed.
         // TODO: 10/16/19 provide support for usercode-Not on the first release.
@@ -513,7 +508,7 @@ public class AuthRequestValidator {
      * @return boolean
      * @throws  ParseException
      */
-    public boolean isValidUser(String authRequest, AuthResponseContextDTO authResponseContextDTO,
+    public boolean isValidUser(String authRequest, CibaResponseContextDTO cibaResponseContextDTO,
                                CibaAuthRequestDTO cibaAuthRequestDTO) throws ParseException {
        boolean validUser = false;
         SignedJWT signedJWT = SignedJWT.parse(authRequest);
@@ -528,9 +523,9 @@ public class AuthRequestValidator {
             if (log.isDebugEnabled()) {
                 log.debug("No Login_hint_token support for current version of IS.");
             }
-            authResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
-            authResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
-            authResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.MISSING_PARAMETERS);
+            cibaResponseContextDTO.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
+            cibaResponseContextDTO.setError(ErrorCodes.INVALID_REQUEST);
+            cibaResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.MISSING_PARAMETERS);
             validUser = false;
 
 
@@ -544,9 +539,9 @@ public class AuthRequestValidator {
                 validUser = true;
 
             } else {
-                authResponseContextDTO.setErrorCode(HttpServletResponse.SC_UNAUTHORIZED);
-                authResponseContextDTO.setError(ErrorCodes.UNAUTHORIZED_USER);
-                authResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.UNKNOWN_USER);
+                cibaResponseContextDTO.setErrorCode(HttpServletResponse.SC_UNAUTHORIZED);
+                cibaResponseContextDTO.setError(ErrorCodes.UNAUTHORIZED_USER);
+                cibaResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.UNKNOWN_USER);
                 if (log.isDebugEnabled()) {
                     log.debug("Unknown user identity.");
                 }
@@ -564,9 +559,9 @@ public class AuthRequestValidator {
                 cibaAuthRequestDTO.setUserHint(getUserfromIDToken(String.valueOf(jo.get("id_token_hint"))));
                 validUser = true;
             } else {
-                authResponseContextDTO.setErrorCode(HttpServletResponse.SC_UNAUTHORIZED);
-                authResponseContextDTO.setError(ErrorCodes.UNAUTHORIZED_USER);
-                authResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.UNKNOWN_USER);
+                cibaResponseContextDTO.setErrorCode(HttpServletResponse.SC_UNAUTHORIZED);
+                cibaResponseContextDTO.setError(ErrorCodes.UNAUTHORIZED_USER);
+                cibaResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.UNKNOWN_USER);
                 if (log.isDebugEnabled()) {
                     log.debug("Unknown user identity.");
                 }
@@ -578,9 +573,9 @@ public class AuthRequestValidator {
             if (log.isDebugEnabled()) {
                 log.debug("Invalid request : Missing mandatory parameter 'hints'");
             }
-            authResponseContextDTO.setErrorCode(HttpServletResponse.SC_UNAUTHORIZED);
-            authResponseContextDTO.setError(ErrorCodes.UNAUTHORIZED_USER);
-            authResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.UNKNOWN_USER);
+            cibaResponseContextDTO.setErrorCode(HttpServletResponse.SC_UNAUTHORIZED);
+            cibaResponseContextDTO.setError(ErrorCodes.UNAUTHORIZED_USER);
+            cibaResponseContextDTO.setErrorDescription(ErrorCodes.SubErrorCodes.UNKNOWN_USER);
             if (log.isDebugEnabled()) {
                 log.debug("Unknown user identity.");
             }

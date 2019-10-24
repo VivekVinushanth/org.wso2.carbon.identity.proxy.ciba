@@ -28,7 +28,8 @@ public class ErrorCodes {
     public static final String MISSING_USER_CODE = "missing_user_code";
     public static final String INVALID_USER_CODE = "invalid_user_code";
     public static final String INVALID_BINDING_MESSAGE = "invalid_binding_message";
-
+    public static final String INVALID_GRANTTYPE = "invalid_grant";
+    public static final String UNAUTHORIZED_TOKEN_REQUEST_MODE = "unauthorized_token_request_mode";
 
 
     private ErrorCodes(){}
@@ -48,5 +49,11 @@ public class ErrorCodes {
         public static final String MISSING_USER_ID = "user_hints_missing";
         public static final String INVALID_SIGNATURE = "invalid_signture";
 
+        public static final String IMPROPER_GRANTTYPE = "improper_grantType";
+        public static final String UNAUTHORIZED_MODE = "improper_token_request_mode";
+        public static final String EXPIRED_AUTH_REQ_ID = "expired_auth_req_id";
+        public static final String SLOWDOWN = "slow_down";
+        public static final String PENDING = "authorization_pending";
+        public static final String INVALID_AUTHREQID = "invalid_auth_req_id";
     }
 }

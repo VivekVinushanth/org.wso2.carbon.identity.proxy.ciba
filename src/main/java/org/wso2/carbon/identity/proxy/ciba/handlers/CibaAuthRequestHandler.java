@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.wso2.carbon.identity.oauth2.IdentityOAuth2Exception;
 import org.wso2.carbon.identity.proxy.ciba.common.CibaParams;
-import org.wso2.carbon.identity.proxy.ciba.dto.AuthResponseContextDTO;
+import org.wso2.carbon.identity.proxy.ciba.dto.CibaResponseContextDTO;
 import org.wso2.carbon.identity.proxy.ciba.dto.CibaAuthRequestDTO;
 import org.wso2.carbon.identity.proxy.ciba.validator.AuthRequestValidator;
 
@@ -54,20 +54,20 @@ import java.text.ParseException;
 
             CibaAuthRequestDTO cibaAuthRequestDTO = new CibaAuthRequestDTO(); //new DTO to capture claims in request
 
-            AuthResponseContextDTO authResponseContextDTO = new AuthResponseContextDTO();
+            CibaResponseContextDTO cibaResponseContextDTO = new CibaResponseContextDTO();
 
-            if (AuthRequestValidator.getInstance().isValidClient(authRequest, authResponseContextDTO, cibaAuthRequestDTO)) {
+            if (AuthRequestValidator.getInstance().isValidClient(authRequest, cibaResponseContextDTO, cibaAuthRequestDTO)) {
                 //check whether the client exists
 
-                if (AuthRequestValidator.getInstance().isValidUser(authRequest, authResponseContextDTO, cibaAuthRequestDTO)) {
+                if (AuthRequestValidator.getInstance().isValidUser(authRequest, cibaResponseContextDTO, cibaAuthRequestDTO)) {
                     //check whether the user exists
 
-                    if (AuthRequestValidator.getInstance().isValidUserCode(authRequest, authResponseContextDTO)) {
+                    if (AuthRequestValidator.getInstance().isValidUserCode(authRequest, cibaResponseContextDTO)) {
                         //extensible method to validate usercode if needed
 
 
                         if (AuthRequestValidator.getInstance().isValidAuthRequest
-                                (authRequest, authResponseContextDTO, cibaAuthRequestDTO)) {
+                                (authRequest, cibaResponseContextDTO, cibaAuthRequestDTO)) {
                             //validate authentication request for existence of mandatory parameters and values
                             try {
                                 return CibaAuthResponseHandler.getInstance().
@@ -85,7 +85,7 @@ import java.text.ParseException;
                         } else {
                             try {
                                 return CibaAuthResponseHandler.getInstance().
-                                        createErrorResponse(authResponseContextDTO);
+                                        createErrorResponse(cibaResponseContextDTO);
                                 //if invalid request - create a ciba error response
 
 
@@ -97,17 +97,17 @@ import java.text.ParseException;
                         }
                     } else {
 
-                        return CibaAuthResponseHandler.getInstance().createErrorResponse(authResponseContextDTO);
+                        return CibaAuthResponseHandler.getInstance().createErrorResponse(cibaResponseContextDTO);
                     }
                 } else {
 
 
-                    return CibaAuthResponseHandler.getInstance().createErrorResponse(authResponseContextDTO);
+                    return CibaAuthResponseHandler.getInstance().createErrorResponse(cibaResponseContextDTO);
                 }
             } else {
 
 
-                return CibaAuthResponseHandler.getInstance().createErrorResponse(authResponseContextDTO);
+                return CibaAuthResponseHandler.getInstance().createErrorResponse(cibaResponseContextDTO);
             }
 
             return null;

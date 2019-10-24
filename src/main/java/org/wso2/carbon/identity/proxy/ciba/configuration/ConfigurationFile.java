@@ -42,8 +42,15 @@ public class ConfigurationFile {
     private  String FLOW_MODE;
     private  String CLIENT_NOTIFICATION_ENDPOINT;
     private String PRIVATE_KEY;
+    private String GRANT_TYPE;
 
+    public String getGRANT_TYPE() {
+        return GRANT_TYPE;
+    }
 
+    public void setGRANT_TYPE(String GRANT_TYPE) {
+        this.GRANT_TYPE = GRANT_TYPE;
+    }
 
     public String getPRIVATE_KEY() {
         return PRIVATE_KEY;

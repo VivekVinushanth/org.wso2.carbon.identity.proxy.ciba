@@ -1,12 +1,12 @@
 package org.wso2.carbon.identity.proxy.ciba.dto;
 
-public class AuthResponseContextDTO {
+public class CibaResponseContextDTO {
 
     private static int ERROR_CODE;
     private static String ERROR;
     private  static String ERROR_DESCRIPTION;
 
-    public AuthResponseContextDTO(){}
+    public CibaResponseContextDTO(){}
 
     public  int getErrorCode() {
         return ERROR_CODE;

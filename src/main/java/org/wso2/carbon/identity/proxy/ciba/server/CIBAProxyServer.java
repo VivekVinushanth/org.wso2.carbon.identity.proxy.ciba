@@ -28,6 +28,7 @@ import org.apache.oltu.oauth2.as.response.OAuthASResponse;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.wso2.carbon.identity.proxy.ciba.handlers.CibaCallBackHandler;
+import org.wso2.carbon.identity.proxy.ciba.handlers.TokenRequestHandler;
 
 
 /**
@@ -89,14 +90,17 @@ public class CIBAProxyServer implements AuthorizationServer {
 
             }
 
+
+
     }
 
         /**
      *Endpoint where token request hits and then proceeded.
      */
     @RequestMapping(value= "/TokenEndPoint")
-    public void acceptTokenRequest(@Context HttpServletRequest request , @Context HttpServletResponse response) {
+    public Response acceptTokenRequest(@Context HttpServletRequest request , @Context HttpServletResponse response) throws Exception {
 
+       return TokenRequestHandler.getInstance().receive(request,response);
 
 
     }

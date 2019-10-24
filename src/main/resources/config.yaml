@@ -10,4 +10,4 @@ flowMode: poll
 clientNotificationEndpoint: http://localhost:8080/CallBackEndpoint
 dbUserPassword:
 privateKey: D1E52A2E85E0F94E0A8DD8794F644C10
-
+grant_type : urn:openid:params:grant-type:ciba

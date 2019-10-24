@@ -19,7 +19,6 @@
 package org.wso2.carbon.identity.proxy.ciba.handlers;
 
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jwt.JWT;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.oltu.oauth2.as.response.OAuthASResponse;
@@ -27,7 +26,7 @@ import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.wso2.carbon.identity.proxy.ciba.common.CibaParams;
 import org.wso2.carbon.identity.proxy.ciba.dao.CibAuthCodeMgtDAO;
-import org.wso2.carbon.identity.proxy.ciba.dto.AuthResponseContextDTO;
+import org.wso2.carbon.identity.proxy.ciba.dto.CibaResponseContextDTO;
 import org.wso2.carbon.identity.proxy.ciba.dto.AuthzRequestDTO;
 import org.wso2.carbon.identity.proxy.ciba.dto.CibaAuthRequestDTO;
 import org.wso2.carbon.identity.proxy.ciba.model.CibaAuthCodeDO;
@@ -179,19 +178,19 @@ public class CibaAuthResponseHandler  {
 
     /**
      * This method create CIBA Authentication Error Response.
-     * @param authResponseContextDTO CIBA AuthenticationResponseContext that accumulates error codes,error,description
+     * @param cibaResponseContextDTO CIBA AuthenticationResponseContext that accumulates error codes,error,description
      * @return response
      * @throws ExecutionException,IOException
      */
-    public Response createErrorResponse(AuthResponseContextDTO authResponseContextDTO)
+    public Response createErrorResponse(CibaResponseContextDTO cibaResponseContextDTO)
             throws OAuthSystemException {
         OAuthResponse errorresponse =  OAuthASResponse
-                .errorResponse(authResponseContextDTO.getErrorCode())
-                .setError(authResponseContextDTO.getError())
-                .setErrorDescription(authResponseContextDTO.getErrorDescription())
+                .errorResponse(cibaResponseContextDTO.getErrorCode())
+                .setError(cibaResponseContextDTO.getError())
+                .setErrorDescription(cibaResponseContextDTO.getErrorDescription())
                 .buildJSONMessage();
 
-        Response.ResponseBuilder respBuilder = Response.status(authResponseContextDTO.getErrorCode());
+        Response.ResponseBuilder respBuilder = Response.status(cibaResponseContextDTO.getErrorCode());
         return respBuilder.entity(errorresponse.getBody()).build();
     }
 
